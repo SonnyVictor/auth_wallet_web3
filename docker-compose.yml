@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth_login_wallet
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - DB_SOURCE=postgresql://root:secret@localhost:5432/auth-wallet?sslmode=disable
+      - DB_NAME=auth-wallet
+    depends_on:
+        - db
+  db:
+    image: postgres:14-alpine
+    container_name: postgres_db_auth_wallet
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: auth-wallet
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
